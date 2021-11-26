@@ -5,3 +5,8 @@ __author__ = "Iris Zanoncelli"
 __team_worker__ = "Emilyne Beaudet"
 __date__ = " 26 novembre 2021"
 __version__ = "0.0.1"
+print("hello")
+
+def sayHello():
+
+    print("sayHello")
