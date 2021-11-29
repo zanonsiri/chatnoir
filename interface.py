@@ -11,6 +11,8 @@ from PyQt5.QtCore import *
 import random
 
 
+
+
 # definition d'une GUI
 class GUI_Plateau(QWidget):
     def __init__(self, taille_plateau, x, y, diametre, espacement_cercle,image_chat):
@@ -24,36 +26,37 @@ class GUI_Plateau(QWidget):
         # Creation fenêtre graphique
         QWidget.__init__(self)
         self.setWindowTitle("Plateau")
-        monLayout = QGridLayout()
-        wid, hgt = 700, 700
-        self.scene_ = QGraphicsScene(0, 0, wid, hgt, self)
+        self.monLayout = QGridLayout()
+        self.width, self.height = 700, 700
+        self.scene_ = QGraphicsScene(0, 0, self.width, self.height, self)
         self.view_ = QGraphicsView(self.scene_, self)
-        self.view_.setMinimumSize(wid + 100, hgt + 100)  # pour avoir une petite marge pour le dessin
-        monLayout.addWidget(self.view_, 5, 0, 1, 2)
+        self.view_.setMinimumSize(self.width + 100, self.height + 100)  # pour avoir une petite marge pour le dessin
+        self.monLayout.addWidget(self.view_, 5, 0, 1, 2)
         # Creation et connexion du bouton quitter
         self.b_quitter_ = self.create_button("Quitter", qApp.quit)
         self.b_quitter_.clicked.connect(qApp.quit)
-        monLayout.addWidget(self.b_quitter_, 6, 1, 1, 1)
+        self.monLayout.addWidget(self.b_quitter_, 6, 1, 1, 1)
         # Creation et connexion du bouton quitter
         self.b_effacer_ = self.create_button("Recommencer", self.reset)
-        monLayout.addWidget(self.b_effacer_, 6, 0, 1, 1)
+        self.monLayout.addWidget(self.b_effacer_, 6, 0, 1, 1)
         # Création de cercles et du dico des cercles
-        dico_cercle = self.tracer_cercles()
+        self.tracer_cercles()
         # Création du dico des points composantant les carrées associés aux cercles
-        dico_aire = self.cercle_inscrit_aire(dico_cercle)
+        dico_aire = self.cercle_inscrit_aire()
         # Cases impossible en couleur
-        dico_cercle = self.case_impossibles(dico_cercle)
+        self.case_impossibles()
+        self.dessiner_chat(330,300)
         # Réaction au clic
         # x, y = self.mousePressEvent("clicked")
-        # self.change_couleur(dico_cercle, dico_aire)
+        # self.change_couleur(self.dico_cercle, dico_aire)
         # Choix du nombre de partie, pas obligé de le garder
         self.label_filename_ = QLabel("Nombre de parties", self)
         self.label_filename_.setAlignment(Qt.AlignCenter)
         self.edit_filename_ = QLineEdit(self)
         # num ligne, num colonne, nbr de ligne, nbr de colonnes
-        monLayout.addWidget(self.label_filename_, 1, 0)
-        monLayout.addWidget(self.edit_filename_, 1, 1, 1, 1)  # comment regler la taille ? (50/50)
-        self.setLayout(monLayout)
+        self.monLayout.addWidget(self.label_filename_, 1, 0)
+        self.monLayout.addWidget(self.edit_filename_, 1, 1, 1, 1)  # comment regler la taille ? (50/50)
+        self.setLayout(self.monLayout)
 
     def reset(self):
         """ efface la zone de dessin"""
@@ -71,7 +74,7 @@ class GUI_Plateau(QWidget):
         et aussi de créer un dictionnaire contenant tous les cercles avec leur état
         @return: le dictionnaire des cercles
         """
-        dico_cercle = {}
+        self.dico_cercle = {}
         xinit = self.x_
         # centre = (self.x_, self.y_)
         for l in range(self.taille_plateau_):
@@ -82,7 +85,7 @@ class GUI_Plateau(QWidget):
                 # entre les 2 centres on a la valeur d'un diametre + une valeur d'espacement
                 self.x_ += self.diametre_ + self.espacement_cercle_
                 # création du dico des cercles, pour associer un cercle à un état : 0 si pas cliqué et 1 si cliqué
-                dico_cercle[self.x_, self.y_] = 0
+                self.dico_cercle[self.x_, self.y_] = 0
             self.y_ += self.diametre_ + self.espacement_cercle_
             self.x_ = xinit
             xinit = self.x_
@@ -90,10 +93,9 @@ class GUI_Plateau(QWidget):
                 # on met les cercles en quinconce
                 # il faut décaler le cerle de la ligne suivante de (diametre + espacement)/2
                 self.x_ += (self.diametre_ + self.espacement_cercle_) / 2
-        print(dico_cercle)
-        return dico_cercle
+        print(self.dico_cercle)
 
-    def cercle_inscrit_aire(self, dico_cercle):
+    def cercle_inscrit_aire(self):
         """
         Avec cette fonction, on associe à chaque cercle, le carré dans lequel il est inscrit
         Nous allons ensuite déterminés toutes les coordonnées des points qui composent ce carrés et les mettrent
@@ -103,7 +105,7 @@ class GUI_Plateau(QWidget):
         @return: un dictionnaire des coordonnées des points composants le carrée dans lequel le cercle est inscrit
         """
         dico_aire = {}
-        for cercle in dico_cercle:
+        for cercle in self.dico_cercle:
             # on initialise le premier point du carré (angle en haut à gauche)
             self.x_ = self.x_ - self.diametre_ / 2
             # print("x initial = ", self.x_)
@@ -121,7 +123,7 @@ class GUI_Plateau(QWidget):
                 # print("dico_aire =", dico_aire[cercle])
         return dico_aire
 
-    def case_impossibles(self, dico_cercle):
+    def case_impossibles(self):
         """
         Fonction qui positionne aléatoirement le nombre de case inacessible par le chat au début de la partie
         :return:
@@ -139,20 +141,19 @@ class GUI_Plateau(QWidget):
             y_num_cercle = random.randint(0, 10)
             self.scene_.addEllipse(x_num_cercle, y_num_cercle, self.diametre_, self.diametre_, QColor(55, 110, 122),
                                    QBrush(Qt.darkGreen))
-            # for cercle in dico_cercle :
+            # for cercle in self.dico_cercle :
             #     if (x_num_cercle, y_num_cercle) == cercle :
             # liste_cercle_impos.append(num_cercle)
             # print("liste_cercle_impos", liste_cercle_impos)
-            # # print(dico_cercle[num_cercle])
-            # #x, y, etat = dico_cercle[num_cercle]
+            # # print(self.dico_cercle[num_cercle])
+            # #x, y, etat = self.dico_cercle[num_cercle]
             #
             # # c'est pas bon, ca ajoute à la fin 102 : 1
-            # dico_cercle[num_cercle] = [1]
+            # self.dico_cercle[num_cercle] = [1]
             #
             # self.scene_.addEllipse(self.x_, self.y_, self.diametre_, self.diametre_, QColor(55, 110, 122),
             #                        QBrush(Qt.darkGreen))
-        print(dico_cercle)
-        #return dico_cercle
+        print(self.dico_cercle)
 
     def mousePressEvent(self, event):
         """
@@ -163,14 +164,14 @@ class GUI_Plateau(QWidget):
         print(event.x(), event.y())
         return event.x(), event.y()
 
-    def change_couleur(self, dico_cercle, dico_aire):
+    def change_couleur(self, dico_aire):
         """
         Fonction qui assure le changement de couleur du cercle une fois qu'il est cliqué
         :param event:
         :return:
         """
         x, y = self.mousePressEvent(event)
-        for cercle in dico_cercle:
+        for cercle in self.dico_cercle:
             for ele in dico_aire:
                 if (x, y) in dico_aire[ele]:
                     self.scene_.addEllipse(self.x_, self.y_, self.diametre_, self.diametre_, QColor(55, 210, 122),
@@ -179,5 +180,14 @@ class GUI_Plateau(QWidget):
                     print("Cliquez sur un cercle s'il nous plait")
                     self.mousePressEvent(event)
     
-    def dessine_chat(self, x, y):
-        return 
+    def dessiner_chat(self, x, y):
+        #self.image_chat
+        self.dessiner_cercle(x,y,Qt.red,Qt.red)
+
+    def dessiner_case(self,x,y):
+        self.dessiner_cercle(x,y,QColor(55, 210, 122),Qt.green)
+
+
+    def dessiner_cercle(self,x,y,premiere_couleur,deuxieme_couleur):
+        self.scene_.addEllipse(x, y, self.diametre_, self.diametre_, QColor(premiere_couleur),
+                                       QBrush(deuxieme_couleur))
