@@ -1,9 +1,3 @@
-# -*- coding:utf-8 -*-
-__projet__ = "Info"
-__nom_fichier__ = "plateau_chat_noir"
-__author__ = "Emilyne BEAUDET, Iris Zanoncelli"
-__date__ = "novembre 2021"
-
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -169,7 +163,7 @@ class GUI_Plateau(QWidget):
         @return:
         """
         # choix aléatoire du nombre de cases inaccessible par le chat dès le début
-        nb_case_impossible = random.randint(1, 13)
+        nb_case_impossible = random.randint(1, 13) # a mettre en variable et a calculé ( doit dependre des variables mises au début)
         print("nb cases imposs = ", nb_case_impossible)
         # création de la liste des numéros de cercles impossibles
         for i in range(nb_case_impossible):

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 __projet__ = "projet_informatique"
 __nom_fichier__ = "main"
-__author__ = "Iris Zanoncelli"
+__author__ = "Emilyne Beaudet et Iris Zanoncelli "
 __date__ = " 26 novembre 2021"
 
 
