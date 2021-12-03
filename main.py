@@ -17,8 +17,9 @@ if __name__ == "__main__":
     x,y = 330,300
 
 
-    chat = Chat(gui,initial_x= x,initial_y = y)
+    chat = Chat(gui,initial_x= x,initial_y = y, max_iteration_fictif= 1)
     print(chat.position())
+    chat.minimax()
 
     for _ in range (3):
 
