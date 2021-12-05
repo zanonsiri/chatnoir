@@ -111,6 +111,7 @@ class Chat:
         num_etape = 0
         branches = self.recupere_voisins_accessibles(grille = self.gui.dico_coordonnee_cercles, x= self.x, y= self.y) # calcule des 1ere branches
         mini_seuil = -1e30
+        etape_min = 10
         #prochaine_position = branches[0]
         for branche in branches: # 1er étape d'anticipation itere sur les voisins possibles/ correspond presque a un max value
         
@@ -119,48 +120,52 @@ class Chat:
     
             # nouvelle position fictive, on teste les positions a savoir si c'est les meilleurs valeurs ou pas
             # on passe au choix posssible du démon
-            mini_value = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
+            mini_value,etape = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
             # doit récuperer la position du démon
             if mini_value > mini_seuil: # a revoir et essayer de comprendre
                 mini_seuil = mini_value
                 prochaine_position = branche # a revoir, on a vu que la position de la branche testé juste avant est bonne donc on la prend comme la bonne position
-            print(branche, mini_value, mini_seuil)
+            elif mini_value == mini_seuil and etape < etape_min : 
+                etape_min = etape 
+                prochaine_position = branche 
+            print(branche, mini_value, mini_seuil,etape)
+
             print()
             #passe a la 3eme anticipation et devrait mettre en place la boucle sur quelques itérations( comme aux échec)
         return prochaine_position
 
     def min_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape): # les valeurs de quand on est dans un min donc dans la position de l'adversaire
         if self.est_cote(position_fictive_x, position_fictive_y) or self.est_bloque(grille, position_fictive_x, position_fictive_y):
-            return self.evaluation(grille, position_fictive_x, position_fictive_y)
+            return self.evaluation(grille, position_fictive_x, position_fictive_y), nombre_etape
 
         if nombre_etape == self.max_iteration_fictif:
-            return self.fonction_evaluation(grille,position_fictive_x, position_fictive_y)
+            return self.fonction_evaluation(grille,position_fictive_x, position_fictive_y, nombre_etape)
         
         valeur = 1e30
         for coordonee in grille:
             if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1) : # utilisateur peut atteindre
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
-                valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape+1))
-        return valeur
+                valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape)[0])
+        return valeur,nombre_etape
 
 
 
     def max_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape): # maximise (si on se place coté démon, on maximise et on minimise celle de l'ange)
-        if self.est_cote(position_fictive_x, position_fictive_y) or self.est_bloque(grille, position_fictive_x, position_fictive_y):
-            return self.evaluation(grille, position_fictive_x, position_fictive_y)
-
-        if nombre_etape == self.max_iteration_fictif:
-            return self.fonction_evaluation(grille,position_fictive_x, position_fictive_y)
         
         valeur = -1e30
         for coordonee in self.recupere_voisins_accessibles(grille,position_fictive_x,position_fictive_y):
             grille_copie = grille.copy()
-            valeur = max(valeur, self.min_value(grille_copie, coordonee[0],coordonee[1], nombre_etape+1))
-        return valeur
+            valeur = max(valeur, self.min_value(grille_copie, coordonee[0],coordonee[1], nombre_etape+1)[0])
+        return valeur, nombre_etape
 
-    def fonction_evaluation(self,grille, x, y):
-        return 1
+    def fonction_evaluation(self,grille, x, y,nombre_etape):
+        """
+        
+        """
+
+        return -min([x,y,self.gui.width - x,self.gui.height - y]), nombre_etape
+        
 
     def evaluation(self,grille_anticipee, x_anticipe, y_anticipe):#changer de nom la fonction qui indique si on est bloqué ou pas donc si on est arrivé à la sortie ou si le démon nous a bloqué
         """

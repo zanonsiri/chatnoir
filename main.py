@@ -14,7 +14,7 @@ if __name__ == "__main__":
     app = QApplication([])
     # creation d'une interface
     gui = GUI_Plateau(taille_plateau=11,x=0,y=0,diametre=50,espacement_cercle=10)
-    x,y = 120,120
+    x,y = 480,480
 
     # Ajouter un contrôle sur les coordonnées au
 
