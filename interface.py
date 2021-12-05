@@ -43,9 +43,6 @@ class GUI_Plateau(QWidget):
         # Cases impossible en couleur
         self.case_impossibles()
 
-        # Dessin du chat
-        self.dessiner_chat(330, 300)
-
         # Réaction au clic
         # x, y = self.mousePressEvent("clicked")
         # self.change_couleur(self.dico_cercle, dico_aire)
@@ -148,10 +145,6 @@ class GUI_Plateau(QWidget):
                     self.liste_aire[num_cercle].append((x, y))
                 y += 1
 
-        print("liste aire cercle 0 : ", self.liste_aire[0])
-        print("LEN liste aire cercle 0 = ", len(self.liste_aire[0]))
-        print("LEN liste aire tot = ", len(self.liste_aire))
-
 
     def case_impossibles(self):
         """
@@ -164,7 +157,6 @@ class GUI_Plateau(QWidget):
         """
         # choix aléatoire du nombre de cases inaccessible par le chat dès le début
         nb_case_impossible = random.randint(1, 13) # a mettre en variable et a calculé ( doit dependre des variables mises au début)
-        print("nb cases imposs = ", nb_case_impossible)
         # création de la liste des numéros de cercles impossibles
         for i in range(nb_case_impossible):
             # on a un nombre de cases qui ne sont pas accessible sur le plateau
@@ -182,8 +174,6 @@ class GUI_Plateau(QWidget):
             self.liste_cercle[num_cercle][2] = 1
 
             self.scene_.addEllipse(x_cercle, y_cercle, self.diametre_, self.diametre_, QColor(55, 110, 122), QBrush(Qt.darkGreen))
-
-        print("liste_cercle", self.liste_cercle)
 
         self.dico_coordonnee_cercles = {}
         for i in range (len(self.liste_cercle)):
