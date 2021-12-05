@@ -30,8 +30,6 @@ class Chat:
         :return:
         """
         
-        voisins_accessibles = self.recupere_voisins_accessibles(grille= self.gui.dico_coordonnee_cercles, x= self.x, y= self.y)
-        #nouvelle_coordonnee = random.choice(voisins_accessibles)
         nouvelle_coordonnee = self.minimax()
         self.gui.dessiner_case(self.x,self.y)
         self.gui.dico_coordonnee_cercles[(self.x, self.y)] = 0 # on remet accessible à l'occupation du démon
@@ -57,7 +55,6 @@ class Chat:
         for voisin in voisins:
             if not grille[voisin]:
                 voisins_accessibles.append(voisin)
-
         return voisins_accessibles
 
     def position(self):
@@ -93,7 +90,7 @@ class Chat:
                 voisins.append((x - self.espacement//2, y - self.espacement))
 
         #Voisins de droite
-        if x + self.espacement <= self.espacement * (self.gui.taille_plateau_ - 1) : #condition de droite
+        if x + self.espacement//2 <= self.espacement * (self.gui.taille_plateau_ - 1) : #condition de droite
             voisins.append((x + self.espacement,y))
             if y + self.espacement <=self.espacement * (self.gui.taille_plateau_ - 1): # à vérifier condition du bas a tester si c'est superieur et égal
                 voisins.append((x + self.espacement//2, y + self.espacement))
@@ -110,9 +107,11 @@ class Chat:
         """
         num_etape = 0
         branches = self.recupere_voisins_accessibles(grille = self.gui.dico_coordonnee_cercles, x= self.x, y= self.y) # calcule des 1ere branches
+        if len(branches) == 0 : 
+            return self.gui.perdu()
         mini_seuil = -1e30
         etape_min = 10
-        #prochaine_position = branches[0]
+        prochaine_position = branches[0]
         for branche in branches: # 1er étape d'anticipation itere sur les voisins possibles/ correspond presque a un max value
         
                 # on anticipe au choix possible de l'ange pour sa prochaine action, anticipe la prochaine action de l'ange, prochaine position possible,
@@ -125,11 +124,10 @@ class Chat:
             if mini_value > mini_seuil: # a revoir et essayer de comprendre
                 mini_seuil = mini_value
                 prochaine_position = branche # a revoir, on a vu que la position de la branche testé juste avant est bonne donc on la prend comme la bonne position
-            elif mini_value == mini_seuil and etape < etape_min : 
+            elif mini_value == mini_seuil and etape < etape_min : #TODO optimiser en fonction du nombre d'étape
                 etape_min = etape 
                 prochaine_position = branche 
             print(branche, mini_value, mini_seuil,etape)
-
             print()
             #passe a la 3eme anticipation et devrait mettre en place la boucle sur quelques itérations( comme aux échec)
         return prochaine_position
@@ -146,7 +144,7 @@ class Chat:
             if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1) : # utilisateur peut atteindre
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
-                valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape)[0])
+                valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape))
         return valeur,nombre_etape
 
 
@@ -157,11 +155,11 @@ class Chat:
         for coordonee in self.recupere_voisins_accessibles(grille,position_fictive_x,position_fictive_y):
             grille_copie = grille.copy()
             valeur = max(valeur, self.min_value(grille_copie, coordonee[0],coordonee[1], nombre_etape+1)[0])
-        return valeur, nombre_etape
+        return valeur
 
     def fonction_evaluation(self,grille, x, y,nombre_etape):
         """
-        
+        #TODO essayer d'autres fonctions d'évaluation (ex prendre en compte le nombre de cases voisines inatteignables)
         """
 
         return -min([x,y,self.gui.width - x,self.gui.height - y]), nombre_etape
@@ -179,7 +177,7 @@ class Chat:
             return 10 # return une valeur, on a réussi
 
         if self.est_bloque (grille_anticipee, x_anticipe, y_anticipe):
-            return 0
+            return -1
 
     def est_bloque(self, grille_anticipee, x_anticipe, y_anticipe):
 
@@ -204,14 +202,3 @@ class Chat:
         if y_anticipe >= self.espacement * (self.gui.taille_plateau_ - 1) - self.espacement // 2:
             return True  # y gere le bas et le haut et x le gauche droite
         return False
-
-
-"""
-il reste a completer max_value et min_value meme niveau que le for mais dans maxvalue t'appelle min_value et inversement
-il faut pouvoir estimer la valeur, la note de la position sur laquelle on est arrivé. 
-veut juste savoir si on arrive ou pas, en gros si le demon peut ne pas nous bloquer
-mais c'est pas la longueur de ton chemin qu'est vraiment important
-
-min/max 
-attribution d'une note
-"""

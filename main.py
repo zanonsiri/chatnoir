@@ -14,24 +14,13 @@ if __name__ == "__main__":
     app = QApplication([])
     # creation d'une interface
     gui = GUI_Plateau(taille_plateau=11,x=0,y=0,diametre=50,espacement_cercle=10)
-    x,y = 480,480
+    x,y = 420,240
 
     # Ajouter un contrôle sur les coordonnées au
 
 
-    chat = Chat(gui,initial_x= x,initial_y = y, max_iteration_fictif= 2)
-    print("Position du chat initial : ",chat.position())
-    #chat.minimax()
-
-    for _ in range (3):
-
-        chat.mouvement()
-        print()
-        print("Nouvelle étape ")
-        print()
-        print("Position du chat : ", chat.position())
-
-    print("Voisins du chat ", chat.recupere_voisins(chat.x, chat.y))
+    chat = Chat(gui,initial_x= x,initial_y = y, max_iteration_fictif= 2)  #TODO Utilisable jusqu'à 2 coups en avance du chat, nécessité optimisation si passage à 3
+    gui.def_chat(chat)
 
     # affichage de l'interface
     gui.show()
