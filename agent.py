@@ -71,7 +71,11 @@ class Chat:
         on commence par regarder les voisins situés à gauche de la position du chat
         si la position du chat - l'espacement est supérieur à 0, ca signifie qu'il y a encore un cercle et qu'il et tjrs dans la grille (en gros qu'il n'est pas sur le dernier cercle)
         alors on ajoute les coordonées de ce cercle dans la liste car c'est un voisin
-        si le cercle situé en dessous de celui du chat est dans le plateau
+        si le cercle situé en dessous de celui du chat est dans le plateau alors on l'ajoute comme voisins potentiel
+        condition du haut : si le cercle situé au dessus est encore dans le plateau, on l'ajoute à la liste
+
+        on réalise la meme chose mais du coté droit.
+        quand on divise par //2 on prend en compte le décalage qu'il y a entre les cercles le fait qu'il soit pas aligné de la même manière
 
 
         :return: retourne la liste des cercles qui sont autour de l'emplacement du chat.
@@ -101,9 +105,16 @@ class Chat:
 
     def minimax(self):
         """
-        on cherche sur quel voisin il chat pourrait aller theoriquement
-        création de l'optimisation du jeu
-        :return:
+        on commence à faire l'optimisation du jeu
+        on cherche sur quel voisin le chat pourrait aller théoriquement.
+        num_etape = au nombre d'étape que l'on prévoit à l'avance, on le définit nous même = on regarde dans le futur et etudie les prochains coups possibles
+        L'optimisation d'un jeu s'illustre à l'aide d'un arbre en particulier de ses feuilles, de ses branches et ses racines.
+        on cherche donc à évaluer les positions de chacun, on va donc devoir travailler en l'alternance soit du coté de l'ange soit du cote du démon.
+
+        Les racines de l'arbre = position initale du chat et du démon
+
+        on crée une copie de la grille réel qui correspondra à la grille de prédictions pour les prochains mouvements du chat et du démon. grille_copie ici c'est la grille des mouvements anticipés
+        :return: la prochaine position fictive que le chat devrait prendre pour avancer de manière optimale
         """
         num_etape = 0
         branches = self.recupere_voisins_accessibles(grille = self.gui.dico_coordonnee_cercles, x= self.x, y= self.y) # calcule des 1ere branches
@@ -114,12 +125,12 @@ class Chat:
         prochaine_position = branches[0]
         for branche in branches: # 1er étape d'anticipation itere sur les voisins possibles/ correspond presque a un max value
         
-                # on anticipe au choix possible de l'ange pour sa prochaine action, anticipe la prochaine action de l'ange, prochaine position possible,
+            # on anticipe au choix possible de l'ange pour sa prochaine action, anticipe la prochaine action de l'ange, prochaine position possible,
             grille_anticipee = self.gui.dico_coordonnee_cercles.copy() # va faire une copie et va changer les positions, fait une copy qui impacte pas la grille initiale
     
             # nouvelle position fictive, on teste les positions a savoir si c'est les meilleurs valeurs ou pas
             # on passe au choix posssible du démon
-            mini_value,etape = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
+            mini_value, etape = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
             # doit récuperer la position du démon
             if mini_value > mini_seuil: # a revoir et essayer de comprendre
                 mini_seuil = mini_value
@@ -145,9 +156,7 @@ class Chat:
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
                 valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape))
-        return valeur,nombre_etape
-
-
+        return valeur, nombre_etape
 
     def max_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape): # maximise (si on se place coté démon, on maximise et on minimise celle de l'ange)
         
@@ -159,6 +168,12 @@ class Chat:
 
     def fonction_evaluation(self,grille, x, y,nombre_etape):
         """
+
+        :param grille:
+        :param x:
+        :param y:
+        :param nombre_etape:
+        :return:
         #TODO essayer d'autres fonctions d'évaluation (ex prendre en compte le nombre de cases voisines inatteignables)
         """
 
@@ -180,6 +195,13 @@ class Chat:
             return -1
 
     def est_bloque(self, grille_anticipee, x_anticipe, y_anticipe):
+        """
+
+        :param grille_anticipee:
+        :param x_anticipe:
+        :param y_anticipe:
+        :return:
+        """
 
         if len(self.recupere_voisins_accessibles(grille_anticipee, x_anticipe, y_anticipe)) == 0 : # est ce qu'il est bloqué ?
             return True
@@ -193,12 +215,14 @@ class Chat:
         :param y_anticipe:
         :return:
         """
+        #x gere le gauche droite
         if x_anticipe <= self.espacement//2 : # on le fait pour le cote ange
             return True
         if x_anticipe >= self.espacement * (self.gui.taille_plateau_-1) - self.espacement//2:
-            return True # y gere le bas et le haut et x le gauche droite
-        if y_anticipe <= self.espacement // 2:  # on le fait pour le cote ange
+            return True
+        # y gere le bas et le haut
+        if y_anticipe <= self.espacement // 2:
             return True
         if y_anticipe >= self.espacement * (self.gui.taille_plateau_ - 1) - self.espacement // 2:
-            return True  # y gere le bas et le haut et x le gauche droite
+            return True
         return False
