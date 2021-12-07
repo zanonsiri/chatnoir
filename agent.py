@@ -46,7 +46,7 @@ class Chat:
         voisins : correspond à toutes les coordonnées des voisins situés autour du chat
         création de la liste des voisins qui seront accessibles
 
-        :return: ca retourne la liste des voisins accessibles (soit des points vert clair ou il peut aller dessus)selon la position du chat
+        :return: ca retourne la liste des voisins accessibles (soit des points vert clair ou le chat peut aller dessus)selon la position du chat
 
 
         """
