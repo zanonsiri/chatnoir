@@ -50,7 +50,9 @@ class Chat:
 
 
         """
+        #print("grille", grille)
         voisins = self.recupere_voisins(x, y)
+        #print("voisin", voisins)
         voisins_accessibles = []
         for voisin in voisins:
             if not grille[voisin]:
@@ -116,7 +118,7 @@ class Chat:
         on crée une copie de la grille réel qui correspondra à la grille de prédictions pour les prochains mouvements du chat et du démon. grille_copie ici c'est la grille des mouvements anticipés
         :return: la prochaine position fictive que le chat devrait prendre pour avancer de manière optimale
         """
-        num_etape = 0
+        nombre_etape = 0
         branches = self.recupere_voisins_accessibles(grille = self.gui.dico_coordonnee_cercles, x= self.x, y= self.y) # calcule des 1ere branches
         if len(branches) == 0 : 
             return self.gui.perdu()
@@ -130,14 +132,14 @@ class Chat:
     
             # nouvelle position fictive, on teste les positions a savoir si c'est les meilleurs valeurs ou pas
             # on passe au choix posssible du démon
-            mini_value, etape = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
+            mini_value, etape = self.min_value(grille_anticipee, branche[0], branche[1], nombre_etape+1) # 2eme étape d'anticipation
             # doit récuperer la position du démon
             if mini_value > mini_seuil: # a revoir et essayer de comprendre
                 mini_seuil = mini_value
                 prochaine_position = branche # a revoir, on a vu que la position de la branche testé juste avant est bonne donc on la prend comme la bonne position
             elif mini_value == mini_seuil and etape < etape_min : #TODO optimiser en fonction du nombre d'étape
-                etape_min = etape 
-                prochaine_position = branche 
+                etape_min = etape
+                prochaine_position = branche
             print(branche, mini_value, mini_seuil,etape)
             print()
             #passe a la 3eme anticipation et devrait mettre en place la boucle sur quelques itérations( comme aux échec)
@@ -149,10 +151,10 @@ class Chat:
 
         if nombre_etape == self.max_iteration_fictif:
             return self.fonction_evaluation(grille,position_fictive_x, position_fictive_y, nombre_etape)
-        
+
         valeur = 1e30
-        for coordonee in grille:
-            if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1) : # utilisateur peut atteindre
+        for coordonee in grille: # la boucle itére sur les positions du démon
+            if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1) : # utilisateur peut atteindre position de l'ange
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
                 valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape))

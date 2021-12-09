@@ -171,7 +171,7 @@ class GUI_Plateau(QWidget):
                  break
 
     def perdu(self):
-
+        # remet le jeu a neuf, empecher
         """
         :return:
         """
@@ -201,4 +201,3 @@ class GUI_Plateau(QWidget):
         self.scene_.addEllipse(x, y, self.diametre_, self.diametre_, QColor(premiere_couleur),
                                QBrush(deuxieme_couleur))
 
-self.chat.game_over()

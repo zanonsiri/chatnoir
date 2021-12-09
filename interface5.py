@@ -44,9 +44,6 @@ class GUI_Plateau(QWidget):
         # Cases impossible en couleur
         self.case_impossibles()
 
-        # Dessin du chat
-        self.dessiner_chat(330, 300)
-
         # Choix du nombre de partie, pas obligé de le garder
         self.label_filename_ = QLabel("Nombre de parties", self)
         self.label_filename_.setAlignment(Qt.AlignCenter)
@@ -71,7 +68,7 @@ class GUI_Plateau(QWidget):
         self.case_impossibles()
 
         # Dessin du chat
-        self.dessiner_chat(330, 300)
+        self.dessiner_chat(330, 300) # TODO a le mettre a une autre position
 
 
     def create_button(self, libelle, method):
@@ -142,7 +139,7 @@ class GUI_Plateau(QWidget):
                 self.liste_aire[num_cercle].append((x, y))
 
                 for j in range(50 - 1):  # on retire 1 car on ajoute deja le premier point de la ligne avant
-                    # on parcours le carré avec un pas de 1 pour les x et les y
+                    # on parcourt le carré avec un pas de 1 pour les x et les y
                     x += 1
                     self.liste_aire[num_cercle].append((x, y))
                 y += 1
@@ -212,7 +209,7 @@ class GUI_Plateau(QWidget):
                     reussite = True
 
         if reussite == False:
-            print("Cliquez sur un cercle s'il vous plait")
+            print("Cliquez sur un cercle s'il vous plait") # a mettre en message
 
 
     def dessiner_cercle(self, x, y, premiere_couleur, deuxieme_couleur):
