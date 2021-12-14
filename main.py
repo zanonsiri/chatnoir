@@ -6,7 +6,7 @@ __date__ = " 26 novembre 2021"
 
 
 from PyQt5.QtWidgets import *
-from interface5 import GUI_Plateau
+from interface4_derniere_modif import GUI_Plateau
 from agent import Chat
 
 if __name__ == "__main__":
