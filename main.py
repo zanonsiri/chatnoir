@@ -7,7 +7,7 @@ __date__ = " 26 novembre 2021"
 
 from PyQt5.QtWidgets import *
 from interface4_probleme import GUI_Plateau
-from agent4 import Chat
+from agent_probleme import Chat
 
 if __name__ == "__main__":
     # creation d'un application
