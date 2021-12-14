@@ -6,8 +6,8 @@ __date__ = " 26 novembre 2021"
 
 
 from PyQt5.QtWidgets import *
-from interface4_derniere_modif import GUI_Plateau
-from agent import Chat
+from interface4_probleme import GUI_Plateau
+from agent4 import Chat
 
 if __name__ == "__main__":
     # creation d'un application
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Ajouter un contrôle sur les coordonnées au
 
 
-    chat = Chat(gui,initial_x= x,initial_y = y, max_iteration_fictif= 2)  #TODO Utilisable jusqu'à 2 coups en avance du chat, nécessité optimisation si passage à 3
+    chat = Chat(gui,initial_x= 330,initial_y = 300, max_iteration_fictif= 2)  #TODO Utilisable jusqu'à 2 coups en avance du chat, nécessité optimisation si passage à 3
     gui.def_chat(chat)
 
     # affichage de l'interface
