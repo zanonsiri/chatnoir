@@ -67,17 +67,8 @@ class GUI_Plateau(QWidget):
         self.case_impossibles()
 
         # Dessin du point du chat
+        # TODO
         self.dessiner_point_chat(330, 300)
-
-        # fin de la partie
-
-        #x_chat, y_chat = Chat.position(self)
-        #self.resultat_final(x_chat, y_chat)
-
-        # # Image chat
-        # x_chat, y_chat = 300, 300
-        # self.dessiner_chat(x_chat, y_chat)
-
 
     def reset(self):
         """ efface la zone de dessin"""
@@ -211,8 +202,7 @@ class GUI_Plateau(QWidget):
         self.dico_coordonnee_cercles = {}
         for i in range(len(self.liste_cercle)):
             # on recre un dico contenant les coordonées et les cercles car on ne peut pas faire avec une liste vu que la liste associe les coordonées à un numéro [0,1..] et on ne peut pas utiliser directement les coordonées
-            self.dico_coordonnee_cercles[tuple(self.liste_cercle[i][:2])] = self.liste_cercle[i][
-                2]  # self.liste_cercle[1]=[60,0,0]
+            self.dico_coordonnee_cercles[tuple(self.liste_cercle[i][:2])] = self.liste_cercle[i][2]  # self.liste_cercle[1]=[60,0,0]
         print("dico", self.dico_coordonnee_cercles)
 
 
@@ -223,10 +213,6 @@ class GUI_Plateau(QWidget):
         @return:
         """
 
-        # Test fin de partie
-        x_chat, y_chat = Chat.position(self)
-        print("x et y chat", x_chat, y_chat)
-        self.resultat_final(x_chat, y_chat)
 
         reussite = False
         # on soustrait des valeurs à x et y car l'origine de la fenetre de dessin n'est pas la meme que celle des cercles
@@ -295,37 +281,29 @@ class GUI_Plateau(QWidget):
     def dessiner_case(self, x, y):
         self.dessiner_cercle(x, y, QColor(55, 210, 122), Qt.green)
 
-
-    def resultat_final (self, x_chat, y_chat):
+    def gagne(self):
         """
         Ce que je veux ici c'est que si on
         @param x_chat:
         @param y_chat:
         @return:
         """
-        chat = Chat(self, initial_x=330, initial_y=300, max_iteration_fictif=2)
-        print('CHAT')
-
         # test pour savoir si le joueur a perdu, le chat a gagné
-        if chat.est_cote(x_chat, y_chat) == True: # la fonction marche si on fait chat.est_cote(0, 0)
-            print("if1")
-            fin_partie = QMessageBox()
-            fin_partie.setIcon(QMessageBox.Information)
-            fin_partie.setText("DOMMAGE, Vous avez perdu... ")
-            fin_partie.setStandardButtons(QMessageBox.Ok)
-            fin_partie.exec_()
 
+        fin_partie = QMessageBox()
+        fin_partie.setIcon(QMessageBox.Information)
+        fin_partie.setText("DOMMAGE, Vous avez perdu... ")
+        fin_partie.setStandardButtons(QMessageBox.Ok)
+        fin_partie.exec_()
+
+    def perdu(self):
         # test pour savoir si le joueur a gagné, le chat a perdu
-        elif chat.est_bloque(self.dico_coordonnee_cercles, x_chat, y_chat) == True :
-            print("if2")
-            fin_partie = QMessageBox()
-            fin_partie.setIcon(QMessageBox.Information)
-            fin_partie.setText("BRAVO, vous avez gagné ! ")
-            fin_partie.setStandardButtons(QMessageBox.Ok)
-            fin_partie.exec_()
 
-        else:
-            print("!!!")
+        fin_partie = QMessageBox()
+        fin_partie.setIcon(QMessageBox.Information)
+        fin_partie.setText("BRAVO, vous avez gagné ! ")
+        fin_partie.setStandardButtons(QMessageBox.Ok)
+        fin_partie.exec_()
 
 
 

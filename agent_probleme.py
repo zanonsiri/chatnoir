@@ -48,10 +48,13 @@ class Chat:
         self.gui.dessiner_case(self.x, self.y)
         self.gui.dico_coordonnee_cercles[(self.x, self.y)] = 0 # on remet accessible à l'occupation du démon
         self.x, self.y = nouvelle_coordonnee
+
         self.gui.dessiner_point_chat(self.x, self.y)
         self.gui.dico_coordonnee_cercles[(self.x, self.y)] = 2 # on rend la case innaccessible à l'occupation du démon car c'est la position de l'ange
+        #test fin de la partie
+        if self.est_cote(self.x, self.y):
+            return self.gui.gagne()
 
-        #gui.resultat_final(self.x, self.y)
 
     def recupere_voisins(self, x, y):
         """
@@ -215,7 +218,7 @@ class Chat:
         :param y_anticipe:
         :return:
         """
-        if self.est_cote( x_anticipe, y_anticipe):
+        if self.est_cote(x_anticipe, y_anticipe):
             return 10 # return une valeur, on a réussi
 
         if self.est_bloque(grille_anticipee, x_anticipe, y_anticipe):
@@ -241,8 +244,6 @@ class Chat:
         :param y_anticipe:
         :return:
         """
-        print("est coté")
-        print(x_anticipe, y_anticipe, self.espacement )
         if x_anticipe <= self.espacement//2:
             return True
         if x_anticipe >= self.espacement * (self.gui.taille_plateau_-1) - self.espacement//2:
