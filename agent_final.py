@@ -7,9 +7,10 @@ __date__ = "décembre 2021"
 
 import random
 
+
 class Chat:
 
-    def __init__(self,gui,initial_x,initial_y, max_iteration_fictif):
+    def __init__(self, gui, initial_x, initial_y, max_iteration_fictif):
         """
         :param gui:
         :param initial_x: ce sont les positions initiale du chat
@@ -17,21 +18,20 @@ class Chat:
         :param correspond au maximun d'iteration auquel le chat va penser a faire, comme dans les échecs c'est le nombre de coup qu'on prévoit
         pour l'instant on dit que la position initiale du chat est toujours la même.
         """
-        self.gui = gui
-        self.x = initial_x
-        self.y = initial_y
-        self.espacement = self.gui.diametre_ + self.gui.espacement_cercle_  # 50 + 10
-        self.max_iteration_fictif = max_iteration_fictif
-        self.gui.dessiner_point_chat(self.x,self.y)
+        self.gui_ = gui
+        self.x_ = initial_x
+        self.y_ = initial_y
+        self.espacement_ = self.gui_.diametre_ + self.gui_.espacement_cercle_  # 50 + 10
+        self.max_iteration_fictif_ = max_iteration_fictif
+        self.gui_.dessiner_point_chat(self.x_, self.y_)
 
     def position(self):
         """
         :return: la position du chat réelle, quand il y a un self c'est que c'est réelle
         """
-        print("FONCTION position chat", self.x, self.y)
-        return self.x,self.y
+        return self.x_, self.y_
 
-    def mouvement(self): # deplacement réel
+    def mouvement(self):  # deplacement réel
         """
         Correspond au déplacement réel du chat. C'est le déplacement optimisé qu'il fera car il aura réfléchit avant a comment gagné
         voisins_accessibles correspond à la liste des cases ou peut avancer le chat par rapport à sa position
@@ -43,18 +43,17 @@ class Chat:
         puis on rend la position du chat innacessible au joueur soit au click
         :return:
         """
-        
+
         nouvelle_coordonnee = self.minimax()
-        self.gui.dessiner_case(self.x, self.y)
-        self.gui.dico_coordonnee_cercles[(self.x, self.y)] = 0 # on remet accessible à l'occupation du démon
-        self.x, self.y = nouvelle_coordonnee
+        self.gui_.dessiner_case(self.x_, self.y_)
+        self.gui_.dico_coordonnee_cercles[(self.x_, self.y_)] = 0  # on remet accessible à l'occupation du démon
+        self.x_, self.y_ = nouvelle_coordonnee
 
-        self.gui.dessiner_point_chat(self.x, self.y)
-        self.gui.dico_coordonnee_cercles[(self.x, self.y)] = 2 # on rend la case innaccessible à l'occupation du démon car c'est la position de l'ange
-        #test fin de la partie
-        if self.est_cote(self.x, self.y):
-            return self.gui.gagne()
-
+        self.gui_.dessiner_point_chat(self.x_, self.y_)
+        self.gui_.dico_coordonnee_cercles[(self.x_, self.y_)] = 2  # on rend la case innaccessible à l'occupation du démon car c'est la position de l'ange
+        # test fin de la partie
+        if self.est_cote(self.x_, self.y_):
+            return self.gui_.gagne()
 
     def recupere_voisins(self, x, y):
         """
@@ -80,32 +79,32 @@ class Chat:
         voisins = []
 
         # Voisin de gauche
-        if x - self.espacement >= 0 : #condition de gauche
-            voisins.append((x - self.espacement, y))
+        if x - self.espacement_ >= 0:  # condition de gauche
+            voisins.append((x - self.espacement_, y))
             ### On regarde si le chat est sur la ligne du bas ?
 
             # Voisin du bas à gauche
-            if y + self.espacement <= self.espacement * (self.gui.taille_plateau_-1):
+            if y + self.espacement_ <= self.espacement_ * (self.gui_.taille_plateau_ - 1):
                 ### s'il n'est pas sur la ligne du bas, on ajoute a la liste des voisins le centre du cercle dessous à gauche
                 ### on fait donc varier le x de la moitié de l'espacement
                 ### et on ajoute la valeur de l'espacement à y
-                voisins.append((x - self.espacement//2, y + self.espacement))
+                voisins.append((x - self.espacement_ // 2, y + self.espacement_))
 
             # Voisins du haut à gauche
-            if y - self.espacement >= 0:
-                voisins.append((x - self.espacement//2, y - self.espacement))
+            if y - self.espacement_ >= 0:
+                voisins.append((x - self.espacement_ // 2, y - self.espacement_))
 
         # Voisins de droite
-        if x + self.espacement <= self.espacement * (self.gui.taille_plateau_ - 1):
-            voisins.append((x + self.espacement, y))
+        if x + self.espacement_ <= self.espacement_ * (self.gui_.taille_plateau_ - 1):
+            voisins.append((x + self.espacement_, y))
 
             # Voisin du bas à droite
-            if y + self.espacement <= self.espacement * (self.gui.taille_plateau_ - 1):
-                voisins.append((x + self.espacement//2, y + self.espacement))
+            if y + self.espacement_ <= self.espacement_ * (self.gui_.taille_plateau_ - 1):
+                voisins.append((x + self.espacement_ // 2, y + self.espacement_))
 
             # Voisin du haut à droite
-            if y - self.espacement >= 0:
-                voisins.append((x + self.espacement//2, y - self.espacement))
+            if y - self.espacement_ >= 0:
+                voisins.append((x + self.espacement_ // 2, y - self.espacement_))
 
         return voisins
 
@@ -113,8 +112,6 @@ class Chat:
         """
 
         :param grille: correspond à la position des cercles (coordonées)
-###### on peut pas renommer ca par num_cercle ??
-
         :param x: position du chat
         :param y: position du chat
         voisins : correspond à toutes les coordonnées des voisins situés autour du chat
@@ -128,7 +125,6 @@ class Chat:
             if grille[voisin] == 0:
                 voisins_accessibles.append(voisin)
         return voisins_accessibles
-
 
     def minimax(self):
         """
@@ -144,59 +140,58 @@ class Chat:
         :return: la prochaine position fictive que le chat devrait prendre pour avancer de manière optimale
         """
         num_etape = 0
-        branches = self.recupere_voisins_accessibles(grille = self.gui.dico_coordonnee_cercles, x= self.x, y= self.y) # calcule des 1ere branches
-        if len(branches) == 0 : 
-            return self.gui.perdu()
+        branches = self.recupere_voisins_accessibles(grille=self.gui_.dico_coordonnee_cercles, x=self.x_, y=self.y_)  # calcule des 1ere branches
+        if len(branches) == 0:
+            return self.gui_.perdu()
         mini_seuil = -1e30
         etape_min = 10
         prochaine_position = branches[0]
-        for branche in branches: # 1er étape d'anticipation itere sur les voisins possibles/ correspond presque a un max value
-        
-                # on anticipe au choix possible de l'ange pour sa prochaine action, anticipe la prochaine action de l'ange, prochaine position possible,
-            grille_anticipee = self.gui.dico_coordonnee_cercles.copy() # va faire une copie et va changer les positions, fait une copy qui impacte pas la grille initiale
-    
+        for branche in branches:  # 1er étape d'anticipation itere sur les voisins possibles/ correspond presque a un max value
+
+            # on anticipe au choix possible de l'ange pour sa prochaine action, anticipe la prochaine action de l'ange, prochaine position possible,
+            grille_anticipee = self.gui_.dico_coordonnee_cercles.copy()  # va faire une copie et va changer les positions, fait une copy qui impacte pas la grille initiale
+
             # nouvelle position fictive, on teste les positions a savoir si c'est les meilleurs valeurs ou pas
             # on passe au choix posssible du démon
-            mini_value,etape = self.min_value(grille_anticipee, branche[0], branche[1], num_etape+1) # 2eme étape d'anticipation
+            mini_value, etape = self.min_value(grille_anticipee, branche[0], branche[1],num_etape + 1)  # 2eme étape d'anticipation
             # doit récuperer la position du démon
-            if mini_value > mini_seuil: # a revoir et essayer de comprendre
+            if mini_value > mini_seuil:  # a revoir et essayer de comprendre
                 mini_seuil = mini_value
-                prochaine_position = branche # a revoir, on a vu que la position de la branche testé juste avant est bonne donc on la prend comme la bonne position
-            elif mini_value == mini_seuil and etape < etape_min : #TODO optimiser en fonction du nombre d'étape
-                etape_min = etape 
-                prochaine_position = branche 
-            #print(branche, mini_value, mini_seuil,etape)
-            #print()
-            #passe a la 3eme anticipation et devrait mettre en place la boucle sur quelques itérations( comme aux échec)
+                prochaine_position = branche  # a revoir, on a vu que la position de la branche testé juste avant est bonne donc on la prend comme la bonne position
+            elif mini_value == mini_seuil and etape < etape_min:  # TODO optimiser en fonction du nombre d'étape
+                etape_min = etape
+                prochaine_position = branche
+                # print(branche, mini_value, mini_seuil,etape)
+                # print()
+                # passe a la 3eme anticipation et devrait mettre en place la boucle sur quelques itérations( comme aux échec)
         return prochaine_position
 
-    def min_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape): # les valeurs de quand on est dans un min donc dans la position de l'adversaire
-        if self.est_cote(position_fictive_x, position_fictive_y) or self.est_bloque(grille, position_fictive_x, position_fictive_y):
+    def min_value(self, grille, position_fictive_x, position_fictive_y,nombre_etape):  # les valeurs de quand on est dans un min donc dans la position de l'adversaire
+        if self.est_cote(position_fictive_x, position_fictive_y) or self.est_bloque(grille, position_fictive_x,position_fictive_y):
             return self.evaluation(grille, position_fictive_x, position_fictive_y), nombre_etape
 
-        if nombre_etape == self.max_iteration_fictif:
+        if nombre_etape == self.max_iteration_fictif_:
             return self.fonction_evaluation(position_fictive_x, position_fictive_y, nombre_etape)
-        
+
         valeur = 1e30
         for coordonee in grille:
-            if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1) : # utilisateur peut atteindre
+            if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1):  # utilisateur peut atteindre
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
                 valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape))
         return valeur, nombre_etape
 
-    def max_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape): # maximise (si on se place coté démon, on maximise et on minimise celle de l'ange)
-        
+    def max_value(self, grille, position_fictive_x, position_fictive_y,nombre_etape):  # maximise (si on se place coté démon, on maximise et on minimise celle de l'ange)
+
         valeur = -1e30
-        for coordonee in self.recupere_voisins_accessibles(grille,position_fictive_x,position_fictive_y):
+        for coordonee in self.recupere_voisins_accessibles(grille, position_fictive_x, position_fictive_y):
             grille_copie = grille.copy()
-            valeur = max(valeur, self.min_value(grille_copie, coordonee[0],coordonee[1], nombre_etape+1)[0])
+            valeur = max(valeur, self.min_value(grille_copie, coordonee[0], coordonee[1], nombre_etape + 1)[0])
         return valeur
 
-    def fonction_evaluation(self, x, y,nombre_etape):
+    def fonction_evaluation(self, x, y, nombre_etape):
         """
 
-        :param grille:
         :param x:
         :param y:
         :param nombre_etape:
@@ -207,10 +202,9 @@ class Chat:
         # gui.width - x correspond a la distance horizontale entre le bord droit du plateau et le point
         # y correspond a la distance verticale entre le haut du plateau et le point
         # gui.width - y correspond a la distance verticale entre le bas du plateau et le point
-        return -min([x,y,self.gui.width - x,self.gui.height - y]), nombre_etape
-        
+        return -min([x, y, self.gui_.width - x, self.gui_.height - y]), nombre_etape
 
-    def evaluation(self,grille_anticipee, x_anticipe, y_anticipe):#changer de nom la fonction qui indique si on est bloqué ou pas donc si on est arrivé à la sortie ou si le démon nous a bloqué
+    def evaluation(self, grille_anticipee, x_anticipe,y_anticipe):  # changer de nom la fonction qui indique si on est bloqué ou pas donc si on est arrivé à la sortie ou si le démon nous a bloqué
         """
         evaluation des feuilles
         :param grille_anticipeee:
@@ -219,7 +213,7 @@ class Chat:
         :return:
         """
         if self.est_cote(x_anticipe, y_anticipe):
-            return 10 # return une valeur, on a réussi
+            return 10  # return une valeur, on a réussi
 
         if self.est_bloque(grille_anticipee, x_anticipe, y_anticipe):
             return -1
@@ -232,24 +226,24 @@ class Chat:
         :param y_anticipe:
         :return:
         """
-        if len(self.recupere_voisins_accessibles(grille_anticipee, x_anticipe, y_anticipe)) == 0 : # est ce qu'il est bloqué ?
+        if len(self.recupere_voisins_accessibles(grille_anticipee, x_anticipe,y_anticipe)) == 0:  # est ce qu'il est bloqué ?
             return True
         return False
 
-    def est_cote(self, x_anticipe, y_anticipe): # quand on est arrivé au bout mais la on enticipe donc self.x vaut tjrs la racine, donc on crée un autre plateau dans notre tête.
+    def est_cote(self, x_anticipe,y_anticipe):  # quand on est arrivé au bout mais la on enticipe donc self.x vaut tjrs la racine, donc on crée un autre plateau dans notre tête.
         """
-        est ce que l'on est sur un cote ?
+        Est ce que l'on est sur un cote ?
         :param grille_anticipeee:
         :param x_anticipe:
         :param y_anticipe:
         :return:
         """
-        if x_anticipe <= self.espacement//2:
+        if x_anticipe <= self.espacement_ // 2:
             return True
-        if x_anticipe >= self.espacement * (self.gui.taille_plateau_-1) - self.espacement//2:
+        if x_anticipe >= self.espacement_ * (self.gui_.taille_plateau_ - 1) - self.espacement_ // 2:
             return True
-        if y_anticipe <= self.espacement // 2:
+        if y_anticipe <= self.espacement_ // 2:
             return True
-        if y_anticipe >= self.espacement * (self.gui.taille_plateau_ - 1) - self.espacement // 2:
+        if y_anticipe >= self.espacement_ * (self.gui_.taille_plateau_ - 1) - self.espacement_ // 2:
             return True
         return False

@@ -30,6 +30,7 @@ class GUI_Plateau(QWidget):
         self.monLayout = QGridLayout()
         self.width, self.height = 700, 700
         self.scene_ = QGraphicsScene(0, 0, self.width, self.height, self)
+        self.scene_.setSceneRect(-50, -50, self.width + 100, self.height + 100)
         self.view_ = QGraphicsView(self.scene_, self)
         self.view_.setMinimumSize(self.width + 100, self.height + 100)  # pour avoir une petite marge pour le dessin
         self.monLayout.addWidget(self.view_, 5, 0, 1, 2)
@@ -67,7 +68,6 @@ class GUI_Plateau(QWidget):
         self.case_impossibles()
 
         # Dessin du point du chat
-        # TODO
         self.dessiner_point_chat(330, 300)
 
     def reset(self):
@@ -80,6 +80,7 @@ class GUI_Plateau(QWidget):
         chat = Chat(self, initial_x=330, initial_y=300, max_iteration_fictif=2)
         self.chat.x = 330
         self.chat.y = 300
+        print("position chat", chat.position())
 
         # Création de cercles et du dico des cercles
         self.tracer_cercles()
@@ -116,10 +117,8 @@ class GUI_Plateau(QWidget):
         for l in range(self.taille_plateau_):
             for c in range(self.taille_plateau_):
                 # addEllipse(position en x, position en y, taille du rayon en x, taille du rayon en y, ...)
-                self.scene_.addEllipse(self.x_, self.y_, self.diametre_, self.diametre_, QColor(55, 210, 122),
-                                       QBrush(Qt.green))
+                self.scene_.addEllipse(self.x_, self.y_, self.diametre_, self.diametre_, QColor(55, 210, 122),QBrush(Qt.green))
                 self.liste_cercle.append([self.x_, self.y_, etat])
-
                 # entre les 2 centres on a la valeur d'un diametre + une valeur d'espacement
                 self.x_ += self.diametre_ + self.espacement_cercle_
 
@@ -212,12 +211,11 @@ class GUI_Plateau(QWidget):
         @param event: le clic souris
         @return:
         """
-
-
         reussite = False
         # on soustrait des valeurs à x et y car l'origine de la fenetre de dessin n'est pas la meme que celle des cercles
+        print("x, y event", event.x(), event.y())
         x = event.x() - 87
-        y = event.y() - 126
+        y = event.y() - 116
 
         for num_cercle in range(len(self.liste_cercle)):
             x_cercle, y_cercle, etat = self.liste_cercle[num_cercle]
@@ -248,9 +246,7 @@ class GUI_Plateau(QWidget):
         @param deuxieme_couleur: couleur que le cercle va prendre suite à l'action
         @return:
         """
-        self.scene_.addEllipse(x, y, self.diametre_, self.diametre_, QColor(premiere_couleur),
-                               QBrush(deuxieme_couleur))
-
+        self.scene_.addEllipse(x, y, self.diametre_, self.diametre_, QColor(premiere_couleur),QBrush(deuxieme_couleur))
 
     def redessiner_cercle(self, x, y):
         """
@@ -283,9 +279,7 @@ class GUI_Plateau(QWidget):
 
     def gagne(self):
         """
-        Ce que je veux ici c'est que si on
-        @param x_chat:
-        @param y_chat:
+        Permet de faire afficher la fenetre pour dire au joueur que le chat a gagné
         @return:
         """
         # test pour savoir si le joueur a perdu, le chat a gagné
@@ -297,8 +291,12 @@ class GUI_Plateau(QWidget):
         fin_partie.exec_()
 
     def perdu(self):
-        # test pour savoir si le joueur a gagné, le chat a perdu
+        """
+        Permet de faire afficher la fenetre pour dire au joueur que le chat a gagné
+        @return:
+        """
 
+        # test pour savoir si le joueur a gagné, le chat a perdu
         fin_partie = QMessageBox()
         fin_partie.setIcon(QMessageBox.Information)
         fin_partie.setText("BRAVO, vous avez gagné ! ")
