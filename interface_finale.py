@@ -78,9 +78,8 @@ class GUI_Plateau(QWidget):
         self.y_ = 0
 
         chat = Chat(self, initial_x=330, initial_y=300, max_iteration_fictif=2)
-        self.chat.x = 330
-        self.chat.y = 300
-        print("position chat", chat.position())
+        self.chat.x_ = 330
+        self.chat.y_ = 300
 
         # Création de cercles et du dico des cercles
         self.tracer_cercles()
