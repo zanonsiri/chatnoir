@@ -116,30 +116,38 @@ class Chat:
         :return: la prochaine position fictive que le chat devrait prendre pour avancer de manière optimale
         """
         num_etape = 0
+
         branches = self.recupere_voisins_accessibles(grille=self.gui_.dico_coordonnee_cercles, x=self.x_, y=self.y_)  # calcule des 1ere branches
         if len(branches) == 0:
             return self.gui_.perdu() # appelle la fonction d'affichage s'il n'y a plus de voisin
         mini_seuil = -1e30
         etape_min = 10
         prochaine_position = branches[0]
+
         for branche in branches:  # 1er étape d'anticipation qui itère sur les voisins possibles
+            print("branche", branche)
 
             # on anticipe la prochaine action du chat soit sa prochaine position possible.
             grille_anticipee = self.gui_.dico_coordonnee_cercles.copy()  #copie du plateau et change les positions pour obtenir les positions fictives possible
 
             # nouvelle position fictive, on teste les positions a savoir si c'est les meilleurs valeurs ou pas
             # on passe au choix posssible du démon
+            print("branche [@]", branche[0],branche[1],num_etape + 1 )
             mini_value, etape = self.min_value(grille_anticipee, branche[0], branche[1],num_etape + 1)  # 2eme étape d'anticipation
+            print("valeur de la fonction min_value", mini_value)
             # doit récuperer la position du démon
             if mini_value > mini_seuil:
                 mini_seuil = mini_value
                 prochaine_position = branche
+                print("mini_value", mini_value, "valeur_seuil", mini_seuil)
 
             elif mini_value == mini_seuil and etape < etape_min:
                 etape_min = etape
                 prochaine_position = branche
 
+
         return prochaine_position
+        print ("prochaine position", prochaine_position)
 
     def min_value(self, grille, position_fictive_x, position_fictive_y, nombre_etape):
         """
@@ -153,10 +161,13 @@ class Chat:
 
         valeur = 1e30
         for coordonee in grille:
+            print("coordonee", coordonee)
             if not (coordonee == (position_fictive_x, position_fictive_y) or grille[coordonee] == 1):
                 grille_copie = grille.copy()
                 grille_copie[coordonee] = 1
                 valeur = min(valeur, self.max_value(grille_copie, position_fictive_x, position_fictive_y, nombre_etape))
+                print("valeur de min", valeur)
+        print("valeur finale ", valeur)
         return valeur, nombre_etape
 
     def max_value(self, grille, position_fictive_x, position_fictive_y,nombre_etape):
